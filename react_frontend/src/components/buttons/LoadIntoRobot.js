@@ -4,13 +4,13 @@ import * as React from "react";
 import PropTypes from "prop-types";
 
 const LoadIntoRobot = (props) => {
-  const { check } = React.useContext(props.context);
+  const { submitCode } = React.useContext(props.context);
 
   return (
     <Button
       id={"loadIntoRobot"}
       color={"secondary"}
-      onClick={check}
+      onClick={submitCode}
       startIcon={<SmartToyOutlinedIcon />}
       sx={{ m: 0.5 }}
       variant={"outlined"}

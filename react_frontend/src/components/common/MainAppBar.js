@@ -35,6 +35,7 @@ function MainAppBar(props) {
     openExercise,
     openForum,
   } = React.useContext(ViewContext);
+
   React.useEffect(() => {
     window.addEventListener("beforeunload", onUnload);
     if (document.readyState === "complete") {

@@ -21,9 +21,24 @@ export function ExerciseProvider({ children }) {
   const [connectionState, setConnectionState] = useState("Connect");
   // launchState - Launch, Launching, Ready
   const [launchState, setLaunchState] = useState("Launch");
+  const createData = (key, value) => {
+    return { key, value };
+  };
+  const [frequencyRows, setFrequencyRows] = useState([
+    createData("Brain Frequency (Hz)", 0),
+    createData("GUI Frequency (Hz)", 0),
+    createData("Simulation Real time factor", 0),
+  ]);
+  const [editorCode, setEditorCode] = useState(`from GUI import GUI
+from HAL import HAL
+# Enter sequential code!
+
+while True:
+    # Enter iterative code!`);
+
   const startSim = () => {
     if (connectionState === "Connect") {
-      ramManager.connect().then(() => {
+      RoboticsExerciseComponents.commsManager.connect().then(() => {
         setConnectionState("Connected");
       });
     }
@@ -31,7 +46,7 @@ export function ExerciseProvider({ children }) {
   const connectionButtonClick = () => {
     if (connectionState === "Connect") {
       setConnectionState("Connecting");
-      startSim(0);
+      startSim();
     }
   };
 
@@ -39,21 +54,29 @@ export function ExerciseProvider({ children }) {
     const config = JSON.parse(
       document.getElementById("exercise-config").textContent
     );
-    console.log(config);
+    console.log(document.getElementById("exercise-config"));
     // Setting up circuit name into configuration
     config.application.params = { circuit: "default" };
     let launch_file = config.launch["0"].launch_file.interpolate({
       circuit: "default",
     });
     config.launch["0"].launch_file = launch_file;
-
-    ramManager
+    console.log(config, "config");
+    RoboticsExerciseComponents.commsManager
       .launch(config)
       .then((message) => {
         setLaunchState("Ready");
+        console.log(message);
       })
-      .catch((response) => {})
+      .catch((response) => {
+        console.log(response, "response");
+        setLaunchState("Launch");
+      })
       .finally(() => {});
+  };
+
+  const editorCodeChange = (e) => {
+    setEditorCode(e);
   };
 
   const launchButtonClick = () => {
@@ -79,6 +102,63 @@ export function ExerciseProvider({ children }) {
   const onUnload = () => {
     console.log("onUnload");
   };
+
+  const submitCode = () => {
+    try {
+      // Get the code from editor and add headers
+
+      console.log(editorCode, "code sumited from state");
+      RoboticsExerciseComponents.commsManager
+        .send("load", {
+          code: editorCode,
+        })
+        .then((message) => {
+          console.log("code loaded");
+        })
+        .catch((response) => {
+          console.error(response);
+        });
+      setAlertState({
+        ...alertState,
+        errorAlert: false,
+        successAlert: false,
+        warningAlert: false,
+        infoAlert: true,
+      });
+      setAlertContent(`Code Sent! Check terminal for more information!`);
+      // deactivateTeleOpButton();
+    } catch {
+      setAlertState({
+        ...alertState,
+        errorAlert: false,
+        successAlert: false,
+        warningAlert: true,
+        infoAlert: false,
+      });
+      setAlertContent(
+        `Connection must be established before sending the code.`
+      );
+    }
+  };
+
+  const loadFileButton = (event) => {
+    event.preventDefault();
+    var fr = new FileReader();
+    fr.onload = () => {
+      setEditorCode(fr.result);
+    };
+    fr.readAsText(event.target.files[0]);
+  };
+
+  const resetSim = () => {
+    RoboticsExerciseComponents.commsManager
+      .reset()
+      .then(() => {
+        console.log("reseting");
+      })
+      .catch((response) => console.log(response));
+  };
+
   const [openInfoModal, setOpenInfoModal] = useState(false);
   const handleInfoModalOpen = () => setOpenInfoModal(true);
   const [openLoadModal, setOpenLoadModal] = useState(false);
@@ -103,6 +183,13 @@ export function ExerciseProvider({ children }) {
         connectionState,
         launchState,
         launchLevel,
+        frequencyRows,
+        setFrequencyRows,
+        submitCode,
+        editorCodeChange,
+        editorCode,
+        resetSim,
+        loadFileButton,
       }}
     >
       {children}

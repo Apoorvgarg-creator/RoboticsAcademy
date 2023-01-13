@@ -3,7 +3,41 @@ import * as React from "react";
 import PropTypes from "prop-types";
 
 export default function ImgCanvas(props) {
-  const { imageRef } = React.useContext(props.context);
+  const [image, setImage] = React.useState(
+    "https://via.placeholder.com/800x600.png?text=No%20image%20received%20from%20exercise"
+  );
+
+  React.useEffect(() => {
+    console.log("TestShowScreen subscribing to ['update'] events");
+    setImage(
+      "https://via.placeholder.com/800x600.png?text=No%20image%20received%20from%20exercise"
+    );
+
+    const callback = (message) => {
+      const update = message.data.update;
+      if (update.image) {
+        const image = JSON.parse(update.image);
+        setImage(`data:image/png;base64,${image.image}`);
+      } else {
+        setImage(
+          "https://via.placeholder.com/800x600.png?text=No%20image%20received%20from%20exercise"
+        );
+      }
+    };
+
+    RoboticsExerciseComponents.commsManager.subscribe(
+      [RoboticsExerciseComponents.commsManager.events.UPDATE],
+      callback
+    );
+
+    return () => {
+      console.log("TestShowScreen unsubscribing from ['state-changed'] events");
+      RoboticsExerciseComponents.commsManager.unsubscribe(
+        [RoboticsExerciseComponents.commsManager.events.UPDATE],
+        callback
+      );
+    };
+  }, []);
   return (
     <Box
       sx={{
@@ -25,7 +59,7 @@ export default function ImgCanvas(props) {
           border: "2px solid #d3d3d3",
           backgroundRepeat: "no-repeat",
         }}
-        ref={imageRef}
+        src={image}
         id="gui_canvas"
       />
     </Box>
