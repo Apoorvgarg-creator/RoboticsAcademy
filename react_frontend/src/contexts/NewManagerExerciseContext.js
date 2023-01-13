@@ -2,6 +2,7 @@ import * as React from "react";
 import PropTypes from "prop-types";
 import CommsManager from "../libs/comms_manager";
 import { useState } from "react";
+import { saveCode } from "../helpers/utils";
 const NewManagerExerciseContext = React.createContext();
 
 export function ExerciseProvider({ children }) {
@@ -35,6 +36,8 @@ from HAL import HAL
 
 while True:
     # Enter iterative code!`);
+
+  const [filename, setfilename] = useState("filename");
 
   const startSim = () => {
     if (connectionState === "Connect") {
@@ -150,6 +153,10 @@ while True:
     fr.readAsText(event.target.files[0]);
   };
 
+  const saveFileButton = () => {
+    saveCode(filename, editorCode);
+  };
+
   const resetSim = () => {
     RoboticsExerciseComponents.commsManager
       .reset()
@@ -190,6 +197,7 @@ while True:
         editorCode,
         resetSim,
         loadFileButton,
+        saveFileButton,
       }}
     >
       {children}

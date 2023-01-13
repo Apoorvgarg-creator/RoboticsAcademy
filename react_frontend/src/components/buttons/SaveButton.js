@@ -4,14 +4,14 @@ import { Button } from "@mui/material";
 import PropTypes from "prop-types";
 
 const SaveButton = (props) => {
-  const { onClickSave } = React.useContext(props.context);
+  const { saveFileButton } = React.useContext(props.context);
 
   return (
     <Button
       id={"save"}
       variant="contained"
       color={"secondary"}
-      onClick={onClickSave}
+      onClick={saveFileButton}
       startIcon={<SaveIcon />}
       sx={{ m: 1 }}
     >
