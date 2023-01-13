@@ -19,6 +19,7 @@ export function ExerciseProvider({ children }) {
   });
   const [launchLevel, setLaunchLevel] = useState(0);
   const [alertContent, setAlertContent] = useState("");
+  const [gazebo, setGazebo] = useState(false);
 
   // connectionState - Connect, Connecting, Connected
   const [connectionState, setConnectionState] = useState("Connect");
@@ -173,6 +174,30 @@ while True:
     setFileName(e.target.value);
   };
 
+  const changeGzWeb = () => {
+    console.log("gazebo");
+    if (!gazebo) {
+      setAlertState({
+        ...alertState,
+        errorAlert: false,
+        successAlert: false,
+        warningAlert: true,
+        infoAlert: false,
+      });
+      setAlertContent(`Gazebo Opened !!`);
+    } else {
+      setAlertState({
+        ...alertState,
+        errorAlert: false,
+        successAlert: false,
+        warningAlert: false,
+        infoAlert: true,
+      });
+      setAlertContent(`Gazebo Closed !!`);
+    }
+    setGazebo(!gazebo);
+  };
+
   const [openInfoModal, setOpenInfoModal] = useState(false);
   const handleInfoModalOpen = () => setOpenInfoModal(true);
   const [openLoadModal, setOpenLoadModal] = useState(false);
@@ -206,6 +231,8 @@ while True:
         loadFileButton,
         saveFileButton,
         handleFilename,
+        changeGzWeb,
+        gazebo,
       }}
     >
       {children}

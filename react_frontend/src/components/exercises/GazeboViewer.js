@@ -3,10 +3,10 @@ import { Box, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 
 function GazeboViewer(props) {
-  const { openGazebo } = React.useContext(props.context);
+  const { gazebo } = React.useContext(props.context);
 
   return (
-    <Box display={openGazebo ? "block" : "none"}>
+    <Box display={gazebo ? "block" : "none"}>
       <Typography color={"secondary"} borderBottom={2} m={0.4}>
         Gazebo
       </Typography>
@@ -17,7 +17,7 @@ function GazeboViewer(props) {
           height: "50vh",
         }}
         src={
-          openGazebo
+          gazebo
             ? "http://127.0.0.1:6080/vnc.html?resize=remote&autoconnect=true"
             : ""
         }
