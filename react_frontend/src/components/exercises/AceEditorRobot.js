@@ -12,10 +12,11 @@ export default function AceEditorRobot(props) {
   const [fontSize, setFontSize] = React.useState(14);
   const {
     filename,
-    handleFilenameChange,
+    handleFilename,
     editorCode,
     editorCodeChange,
     editorRef,
+    setFileName,
   } = React.useContext(props.context);
 
   const setFontSize_ = (augm) => {
@@ -61,7 +62,7 @@ export default function AceEditorRobot(props) {
           label="Filename"
           color={"secondary"}
           value={filename}
-          onChange={handleFilenameChange}
+          onChange={handleFilename}
         />
       </Box>
       <Box id="code_container">

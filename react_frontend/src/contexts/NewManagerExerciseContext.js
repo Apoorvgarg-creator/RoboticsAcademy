@@ -9,6 +9,7 @@ export function ExerciseProvider({ children }) {
   const ramHost = window.location.hostname;
   const ramPort = 7163;
   const ramManager = CommsManager(`ws://${ramHost}:${ramPort}`);
+
   const [exercise, setExercise] = React.useState(null);
   const [alertState, setAlertState] = useState({
     errorAlert: false,
@@ -18,8 +19,10 @@ export function ExerciseProvider({ children }) {
   });
   const [launchLevel, setLaunchLevel] = useState(0);
   const [alertContent, setAlertContent] = useState("");
+
   // connectionState - Connect, Connecting, Connected
   const [connectionState, setConnectionState] = useState("Connect");
+
   // launchState - Launch, Launching, Ready
   const [launchState, setLaunchState] = useState("Launch");
   const createData = (key, value) => {
@@ -37,7 +40,7 @@ from HAL import HAL
 while True:
     # Enter iterative code!`);
 
-  const [filename, setfilename] = useState("filename");
+  const [filename, setFileName] = useState("filename");
 
   const startSim = () => {
     if (connectionState === "Connect") {
@@ -166,6 +169,10 @@ while True:
       .catch((response) => console.log(response));
   };
 
+  const handleFilename = (e) => {
+    setFileName(e.target.value);
+  };
+
   const [openInfoModal, setOpenInfoModal] = useState(false);
   const handleInfoModalOpen = () => setOpenInfoModal(true);
   const [openLoadModal, setOpenLoadModal] = useState(false);
@@ -198,6 +205,7 @@ while True:
         resetSim,
         loadFileButton,
         saveFileButton,
+        handleFilename,
       }}
     >
       {children}
