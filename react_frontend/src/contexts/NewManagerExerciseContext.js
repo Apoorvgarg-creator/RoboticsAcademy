@@ -20,6 +20,7 @@ export function ExerciseProvider({ children }) {
   const [launchLevel, setLaunchLevel] = useState(0);
   const [alertContent, setAlertContent] = useState("");
   const [gazebo, setGazebo] = useState(false);
+  const [consoleView, setConsoleView] = useState(false);
 
   // connectionState - Connect, Connecting, Connected
   const [connectionState, setConnectionState] = useState("Connect");
@@ -114,7 +115,6 @@ while True:
     try {
       // Get the code from editor and add headers
 
-      console.log(editorCode, "code sumited from state");
       RoboticsExerciseComponents.commsManager
         .send("load", {
           code: editorCode,
@@ -198,6 +198,29 @@ while True:
     setGazebo(!gazebo);
   };
 
+  const changeConsole = () => {
+    if (!consoleView) {
+      setAlertState({
+        ...alertState,
+        errorAlert: false,
+        successAlert: false,
+        warningAlert: false,
+        infoAlert: true,
+      });
+      setAlertContent(`Console Opened !!`);
+    } else {
+      setAlertState({
+        ...alertState,
+        errorAlert: false,
+        successAlert: false,
+        warningAlert: true,
+        infoAlert: false,
+      });
+      setAlertContent(`Console Closed !!`);
+    }
+    setConsoleView(!consoleView);
+  };
+
   const [openInfoModal, setOpenInfoModal] = useState(false);
   const handleInfoModalOpen = () => setOpenInfoModal(true);
   const [openLoadModal, setOpenLoadModal] = useState(false);
@@ -233,6 +256,8 @@ while True:
         handleFilename,
         changeGzWeb,
         gazebo,
+        changeConsole,
+        consoleView,
       }}
     >
       {children}
